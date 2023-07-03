@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lista de tarefas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .task-input {
+      width: 70%;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .task-button {
+      display: inline-block;
+      width: 28%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      margin-bottom: 5px;
+    }
+
+    .task-item button {
+      padding: 5px 10px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Lista de tarefas</h1>
+
+    <div>
+      <input type="text" id="taskInput" class="task-input" placeholder="Nova tarefa">
+      <button onclick="addTask()" class="task-button">Adicionar</button>
+    </div>
+
+    <ul id="taskList" class="task-list">
+    </ul>
+  </div>
+
+  <script>
+    var taskList = document.getElementById("taskList");
+    var tasks = [];
+
+    // Carregar as tarefas salvas no Local Storage, se houver
+    loadTasks();
+
+    function loadTasks() {
+      var savedTasks = localStorage.getItem("tasks");
+      if (savedTasks) {
+        tasks = JSON.parse(savedTasks);
+        renderTasks();
+        attachRemoveListeners();
+      }
+    }
+
+    function addTask() {
+      var taskInput = document.getElementById("taskInput");
+
+      if (taskInput.value !== "") {
+        var newTask = taskInput.value;
+
+        if (!isTaskDuplicate(newTask)) {
+          tasks.push(newTask);
+          saveTasks();
+          renderTask(newTask);
+
+          taskInput.value = "";
+        } else {
+          alert("Essa tarefa já existe na lista!");
+        }
+      }
+    }
+
+    function isTaskDuplicate(taskName) {
+      return tasks.includes(taskName);
+    }
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      for (var i = 0; i < tasks.length; i++) {
+        renderTask(tasks[i]);
+      }
+    }
+
+    function renderTask(taskName) {
+      var taskItem = document.createElement("li");
+      taskItem.className = "task-item";
+      taskItem.innerHTML = taskName;
+
+      var removeButton = document.createElement("button");
+      removeButton.innerHTML = "Remover";
+      removeButton.className = "remove-button"; // Adicionei uma classe aos botões de remoção
+      removeButton.onclick = removeTask; // Usei a mesma função para remoção em todos os botões
+
+      taskItem.appendChild(removeButton);
+      taskList.appendChild(taskItem);
+    }
+
+    function attachRemoveListeners() {
+      var removeButtons = document.getElementsByClassName("remove-button");
+      for (var i = 0; i < removeButtons.length; i++) {
+        removeButtons[i].onclick = removeTask;
+      }
+    }
+
+    function removeTask() {
+      var taskItem = this.parentNode;
+      var taskName = taskItem.innerHTML;
+      tasks = tasks.filter(task => task !== taskName);
+      taskItem.parentNode.removeChild(taskItem);
+      saveTasks();
+    }
+  </script>
+</body>
+</html>
