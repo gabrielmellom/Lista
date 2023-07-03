@@ -73,80 +73,84 @@ h1 {
 </ul>
   </div>
   <script>
-    const listaTarefas = document.getElementById("taskList");
-    let tarefas = [];
+const listaTarefas = document.getElementById("taskList");
+let tarefas = [];
 
-    carregarTarefas();
+carregarTarefas();
 
-    function carregarTarefas() {
-      const tarefasSalvas = localStorage.getItem("tarefas");
-      if (tarefasSalvas) {
-        tarefas = JSON.parse(tarefasSalvas);
-        renderizarTarefas();
-        anexarOuvintesDeRemocao();
-      }
-    }
+function carregarTarefas() {
+  const tarefasSalvas = localStorage.getItem("tarefas");
+  if (tarefasSalvas) {
+    tarefas = JSON.parse(tarefasSalvas);
+    renderizarTarefas();
+    anexarOuvintesDeRemocao();
+  }
+}
 
-    function adicionarTarefa() {
-      const inputTarefa = document.getElementById("taskInput");
+function adicionarTarefa() {
+  const inputTarefa = document.getElementById("taskInput");
 
-      if (inputTarefa.value !== "") {
-        const novaTarefa = inputTarefa.value;
+  if (inputTarefa.value !== "") {
+    const novaTarefa = inputTarefa.value;
 
-        if (!verificarDuplicidadeTarefa(novaTarefa)) {
-          tarefas.push(novaTarefa);
-          salvarTarefas();
-          renderizarTarefa(novaTarefa);
-
-          inputTarefa.value = "";
-        } else {
-          alert("Essa tarefa já existe na lista!");
-        }
-      }
-    }
-
-    function verificarDuplicidadeTarefa(nomeTarefa) {
-      return tarefas.includes(nomeTarefa);
-    }
-
-    function salvarTarefas() {
-      localStorage.setItem("tarefas", JSON.stringify(tarefas));
-    }
-
-    function renderizarTarefas() {
-      for (let i = 0; i < tarefas.length; i++) {
-        renderizarTarefa(tarefas[i]);
-      }
-    }
-
-    function renderizarTarefa(nomeTarefa) {
-      const itemTarefa = document.createElement("li");
-      itemTarefa.className = "task-item";
-      itemTarefa.innerHTML = nomeTarefa;
-
-      const botaoRemover = document.createElement("button");
-      botaoRemover.innerHTML = "Remover";
-      botaoRemover.className = "remove-button"; // Adicionei uma classe aos botões de remoção
-      botaoRemover.onclick = removerTarefa; // Usei a mesma função para remoção em todos os botões
-
-      itemTarefa.appendChild(botaoRemover);
-      listaTarefas.appendChild(itemTarefa);
-    }
-
-    function anexarOuvintesDeRemocao() {
-      const botoesRemover = document.getElementsByClassName("remove-button");
-      for (let i = 0; i < botoesRemover.length; i++) {
-        botoesRemover[i].onclick = removerTarefa;
-      }
-    }
-
-    function removerTarefa() {
-      const itemTarefa = this.parentNode;
-      const nomeTarefa = itemTarefa.innerHTML;
-      tarefas = tarefas.filter(tarefa => tarefa !== nomeTarefa);
-      itemTarefa.parentNode.removeChild(itemTarefa);
+    if (!verificarDuplicidadeTarefa(novaTarefa)) {
+      tarefas.push(novaTarefa);
       salvarTarefas();
+      renderizarTarefa(novaTarefa);
+
+      inputTarefa.value = "";
+    } else {
+      alert("Essa tarefa já existe na lista!");
     }
+  }
+}
+
+function verificarDuplicidadeTarefa(nomeTarefa) {
+  return tarefas.includes(nomeTarefa);
+}
+
+function salvarTarefas() {
+  localStorage.setItem("tarefas", JSON.stringify(tarefas));
+}
+
+function renderizarTarefas() {
+  for (let i = 0; i < tarefas.length; i++) {
+    renderizarTarefa(tarefas[i]);
+  }
+}
+
+function renderizarTarefa(nomeTarefa) {
+  const itemTarefa = document.createElement("li");
+  itemTarefa.className = "task-item";
+  itemTarefa.dataset.tarefa = nomeTarefa; // Armazena o nome da tarefa no atributo data-tarefa
+
+  const tarefaTexto = document.createElement("span");
+  tarefaTexto.textContent = nomeTarefa;
+  itemTarefa.appendChild(tarefaTexto);
+
+  const botaoRemover = document.createElement("button");
+  botaoRemover.textContent = "Remover";
+  botaoRemover.className = "remove-button";
+  botaoRemover.onclick = removerTarefa;
+
+  itemTarefa.appendChild(botaoRemover);
+  listaTarefas.appendChild(itemTarefa);
+}
+
+function anexarOuvintesDeRemocao() {
+  const botoesRemover = document.getElementsByClassName("remove-button");
+  for (let i = 0; i < botoesRemover.length; i++) {
+    botoesRemover[i].onclick = removerTarefa;
+  }
+}
+
+function removerTarefa() {
+  const itemTarefa = this.parentNode;
+  const nomeTarefa = itemTarefa.dataset.tarefa; // Obtém o nome da tarefa do atributo data-tarefa
+  tarefas = tarefas.filter(tarefa => tarefa !== nomeTarefa);
+  itemTarefa.parentNode.removeChild(itemTarefa);
+  salvarTarefas(); // Salva as alterações no armazenamento local após remover a tarefa
+}
   </script>
 </body>
 </html>
