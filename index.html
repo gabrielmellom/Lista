@@ -19,44 +19,59 @@ h1 {
 }
 
 .task-input {
-  width: 70%;
-  padding: 10px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
+    width: 255%;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 .task-button {
-  display: inline-block;
-  width: 28%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-sizing: border-box;
+    display: inline-block;
+    width: 28%;
+    border-radius: 4px;
+    height: 37px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
 }
 
 .task-list {
   list-style-type: none;
   padding: 0;
 }
-
 .task-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    border-radius: 10px;
+}
+#apagar{
+
+}
+.list-home {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.task-item button {
+    margin-top: 1px;
+    /* padding: 3px 3px; */
+    /* background-color: #f44336; */
+    /* color: white; */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
-.task-item button {
-  padding: 5px 10px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  cursor: pointer;
+#add{
+  margin: -4px;
 }
   </style>
 </head>
@@ -64,19 +79,23 @@ h1 {
   <div class="container">
     <h1>Lista de tarefas</h1>
 
-<div>
+<div class="list-home">
   <input type="text" id="taskInput" class="task-input" placeholder="Nova tarefa">
-  <button onclick="adicionarTarefa()" class="task-button">Adicionar</button>
+  <button onclick="adicionarTarefa()" class="task-button"><svg xmlns="http://www.w3.org/2000/svg"  id="add" width="25" height="25" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+  </svg></button>
 </div>
 
 <ul id="taskList" class="task-list">
 </ul>
   </div>
   <script>
+    
 const listaTarefas = document.getElementById("taskList");
 let tarefas = [];
 
 carregarTarefas();
+
 
 function carregarTarefas() {
   const tarefasSalvas = localStorage.getItem("tarefas");
@@ -122,14 +141,18 @@ function renderizarTarefas() {
 function renderizarTarefa(nomeTarefa) {
   const itemTarefa = document.createElement("li");
   itemTarefa.className = "task-item";
-  itemTarefa.dataset.tarefa = nomeTarefa; // Armazena o nome da tarefa no atributo data-tarefa
+  itemTarefa.dataset.tarefa = nomeTarefa; 
 
   const tarefaTexto = document.createElement("span");
   tarefaTexto.textContent = nomeTarefa;
   itemTarefa.appendChild(tarefaTexto);
 
   const botaoRemover = document.createElement("button");
-  botaoRemover.textContent = "Remover";
+  botaoRemover.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" id="apagar" width="15" height="15" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> \
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/> \
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/> \
+                          </svg>';
+                          
   botaoRemover.className = "remove-button";
   botaoRemover.onclick = removerTarefa;
 
@@ -146,10 +169,10 @@ function anexarOuvintesDeRemocao() {
 
 function removerTarefa() {
   const itemTarefa = this.parentNode;
-  const nomeTarefa = itemTarefa.dataset.tarefa; // Obtém o nome da tarefa do atributo data-tarefa
+  const nomeTarefa = itemTarefa.dataset.tarefa; 
   tarefas = tarefas.filter(tarefa => tarefa !== nomeTarefa);
   itemTarefa.parentNode.removeChild(itemTarefa);
-  salvarTarefas(); // Salva as alterações no armazenamento local após remover a tarefa
+  salvarTarefas(); 
 }
   </script>
 </body>
